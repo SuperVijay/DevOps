@@ -1,0 +1,94 @@
+Katacoda, in-browser Kubernetes environment
+kubectl controls the Kubernetes cluster manager.
+
+$ kubectl get nodes
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   42m   v1.15.0
+
+
+
+A Kubernetes Pod is a group of one or more Containers, tied together for the purposes of administration and networking.
+
+kubectl create command to create a Deployment that manages a Pod.
+The Pod runs a Container based on the provided Docker image.
+
+
+$ kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+
+deployment.apps/hello-node created
+
+$ kubectl get deployments
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node   1/1     1            1           24s
+
+$ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+hello-node-55b49fb9f8-n9glp   1/1     Running   0          45s
+
+$ kubectl get events
+
+
+By default, the Pod is only accessible by its internal IP address within the Kubernetes cluster. 
+To make the hello-node Container accessible from outside the Kubernetes virtual network, you have to expose the Pod as a Kubernetes Service.
+
+Expose the Pod to the public internet using the kubectl expose command:
+
+$ kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+The --type=LoadBalancer flag indicates that you want to expose your Service outside of the cluster.
+
+
+
+
+
+
+
+# check minikube is working
+$ minikube version
+
+# start the cluster by runniing minikube start
+$ minikube start
+Preparing Kubernetes v1.15.0 on Docker 18.09.5 ...
+  - kubelet.resolv-conf=/run/systemd/resolve/resolv.conf
+* Pulling images ...
+* Launching Kubernetes ...
+* Waiting for: apiserver proxy etcd scheduler controller dns
+* Done! kubectl is now configured to use "minikube"
+
+# now minikube started a virtual machine for you
+#  and a kubernetes cluster is now running on that vm.
+
+# check kubectl is available to get cluster information
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.2", GitCommit:"f6278300bebbb750328ac16ee6dd3aa7d3549568", GitTreeState:"clean", BuildDate:"2019-08-05T09:23:26Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean", BuildDate:"2019-06-19T16:32:14Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+
+# above client version is kubectl version
+#   and server version is 
+
+
+$ kubectl cluster-info
+Kubernetes master is running at https://172.17.0.42:8443
+KubeDNS is running at https://172.17.0.42:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+# to view nodes in the cluster
+$ kubectl get  nodes
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   30m   v1.15.0
+$
+
+
+Once you have a running Kubernetes cluster, you can deploy your containerized applications on top of it. 
+To do so, you create a Kubernetes Deployment configuration.
+The Deployment instructs Kubernetes how to create and update instances of your application. 
+Once you've created a Deployment, the Kubernetes master schedules mentioned application instances onto individual Nodes in the cluster.
+
+Once the application instances are created, a Kubernetes Deployment Controller continuously monitors those instances.
+If the Node hosting an instance goes down or is deleted, the Deployment controller replaces the instance with an instance on another Node in the cluster.
+
+
+# create and manage deployment using kubectl (kubernetes cli)
+
+When you create a Deployment, you'll need to specify the container image for your application and the number of replicas that you want to run.
+You can change that information later by updating your Deployment.
+
+
